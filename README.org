@@ -1,4 +1,4 @@
-3* Cloud Infra - a reproducible cloud infrastructure for JJBA's projects
+* Cloud Infra - a reproducible cloud infrastructure for JJBA's projects
 
 Welcome to my cloud infrastructure's source code. Here you can learn a lot about subjects like Nix, Flakes, Terraform (OpenTofu), Amazon AWS and more.
 
