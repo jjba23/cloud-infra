@@ -1,4 +1,4 @@
-* Cloud Infra - a reproducible cloud infrastructure for JJBA's projects
+3* Cloud Infra - a reproducible cloud infrastructure for JJBA's projects
 
 Welcome to my cloud infrastructure's source code. Here you can learn a lot about subjects like Nix, Flakes, Terraform (OpenTofu), Amazon AWS and more.
 
@@ -39,3 +39,4 @@ terranix is a tool that enables you to render the config.tf.json file. It uses t
 Run ~journalctl -u amazon-init -e~ as root.
 
 
+*** TODO separate into smaller instances, instead of medium, use small, one is CI builder spot instance, other is permanent runner server as  where deployment target
