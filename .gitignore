@@ -1,0 +1,5 @@
+.terraform*
+terraform.tfstate*
+config.tf.json
+.direnv/
+.terraform.lock.hcl

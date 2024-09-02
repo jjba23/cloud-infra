@@ -1,0 +1,41 @@
+* Cloud Infra - a reproducible cloud infrastructure for JJBA's projects
+
+Welcome to my cloud infrastructure's source code. Here you can learn a lot about subjects like Nix, Flakes, Terraform (OpenTofu), Amazon AWS and more.
+
+** What is the motivation ?
+
+This is an effort in using the great [[https://terranix.org/][Terranix project]] to help declare all my infrastructure using the great Nix configuration language.
+
+At the same time I profit from all the [[https://developer.hashicorp.com/terraform/language/providers][Terraform providers]] that exist.
+
+With the code you can find here, I create and maintain all my AWS infrastructure in a very pleasant way, and creating good abstractions to ease my journey in the cloud.
+
+** Interesting files
+
+See [[file:configuration.nix][configuration.nix]] to get an idea of how I use my own built abstractions to declare my cloud infrastructure.
+
+Then explore the mystical contents of the [[file:src/][src/]] folder where all the logic for different providers resides.
+
+You can see some more information about Terranix and its usage in [[file:docs/][docs/]].
+
+** What is Terraform?
+
+Terraform (and OpenTofu) is a tool to interact with APIs via declarative files. Also known as "infrastructure as code". Instead of write imperative scripts, you define the setup you like to have and terraform will make it happen.
+
+** Why Nix instead of Terraform
+
+Using Nix you have the power of a programming language, while being extremely suitable for configuration declaration. You can greatly reduce duplication, cognitive load, and provide good defaults, in a concise manner.
+
+You also have complete reproducibility package and plugin wise thanks to the Terranix project.
+
+Read more about the amazing advantages of Nix in this use case down below.
+
+** TODO What is terranix?
+
+terranix is a tool that enables you to render the config.tf.json file. It uses the NixOS module system and gives you tools like terranix-doc-man and terranix-doc-json to generate documentation of terranix modules.
+
+** How to diagnose user data script in Amazon AWS EC2 instances ?
+
+Run ~journalctl -u amazon-init -e~ as root.
+
+

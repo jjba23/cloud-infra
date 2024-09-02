@@ -1,0 +1,64 @@
+# Cloud Infra
+# Copyright (C) 2023  Josep Jesus Bigorra Algaba (jjbigorra@gmail.com)
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+stages:
+  - lint
+  - apply-plan
+      
+check-nix-files-syntax:
+  image: nixos/nix
+  stage: lint
+  tags:
+    - saas-linux-large-amd64
+
+  script:
+    - find . -name '*.nix' -print0 | xargs -r0 nix-instantiate --parse-only 
+    - nix develop --experimental-features 'nix-command flakes' -c statix check
+    - nix develop --experimental-features 'nix-command flakes' -c deadnix -f
+
+.terranix-common:
+  image: nixos/nix
+  tags:
+    - saas-linux-large-amd64
+
+  before_script:
+    - mkdir $HOME/.aws
+    - echo "[default]" >> $HOME/.aws/config
+    - echo "region = eu-west-3" >> $HOME/.aws/config
+    - echo "[master-infra]" >> $HOME/.aws/credentials
+    - echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> $HOME/.aws/credentials
+    - echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> $HOME/.aws/credentials
+    
+make-plan:
+  stage: lint
+  extends:
+    - .terranix-common
+  script:
+    - nix develop  --experimental-features 'nix-command flakes' -c make plan
+    
+apply-plan:
+  stage: apply-plan
+  extends:
+    - .terranix-common  
+  only:
+    refs:
+      - trunk
+  script:
+    - nix develop --experimental-features 'nix-command flakes' -c make run
+  after_script:
+    - nix develop --experimental-features 'nix-command flakes' -c make save-state
+
+

@@ -1,0 +1,155 @@
+
+* Cloud Infra Documentation
+
+** Getting dirty with Nix, Terranix and writing infra code
+
+Very often you can pretty much 1:1 transform Terraform code to Nix:
+
+#+begin_src terraform
+  resource "aws_route53_record" "www" {
+    zone_id = aws_route53_zone.primary.zone_id
+    name    = "www.example.com"
+    type    = "A"
+    ttl     = 300
+    records = [aws_eip.lb.public_ip]
+  }
+#+end_src
+
+#+begin_src nix
+  resource.aws_route53_record."www" = {
+    zone_id = lib.tfRef "aws_route53_zone.primary.zone_id";
+    name    = "www.example.com";
+    type    = "A";
+    ttl     = 300;
+    # or if you are not into tfRef you can rawdog it
+    records = ["\${aws_eip.lb.public_ip}"];
+  }
+#+end_src
+
+But Nix has many more powerful features and is more pleasant to use than HCL.
+
+
+** Differences between Terraform and Terranix
+
+HCL is the language of terraform. It has its flaws, this is why terranix was born.
+
+In HCL you would do something like this:
+#+begin_src terraform
+  resource "aws_instance" "web" {
+    ami           = "${data.aws_ami.ubuntu.id}"
+    instance_type = "t2.micro"
+    tags = {
+      Name = "HelloWorld"
+    }
+  }
+#+end_src
+
+Which is the equivalent for the following in terranix:
+#+begin_src nix
+  resource."aws_instance"."web" = {
+    ami = "\${data.aws_ami.ubuntu.id}";
+    instance_type = "t2.micro";
+    tags = {
+      Name = "HelloWorld";
+    };
+  }
+#+end_src
+
+In HCL you can only reference variable outputs. But in terranix, because it is nix, you can basically reference everything.
+
+For example if you have a resource and you want to reuse its parameters:
+#+begin_src nix
+  resource.hcloud_server.myserver = {
+    name = "node1";
+    image = "debian-9";
+    server_type = "cx11";
+  };
+
+#+end_src
+
+You can reference parameters the terraform way.
+#+begin_src nix
+  resource.hcloud_server.myotherserver = {
+    name = "node2";
+    image = lib.tfRef "hcloud_server.myserver.image";
+    server_type = "\${ hcloud_server.myserver.server_type }";
+  };
+#+end_src
+
+Or the terranix way:
+#+begin_src nix
+  { config, ... }:
+  resource.hcloud_server.myotherotherserver = {
+    name = "node3";
+    image = config.resource.hcloud_server.myserver.image;
+    server_type = config.resource.hcloud_server.myserver.server_type;
+  };
+#+end_src
+
+
+Or the terranix pro way:
+#+begin_src nix
+  { config, ... }:
+  resource.hcloud_server.myotherotherotherserver = {
+    name = "node4";
+    inherit (config.resource.hlcoud_server) image server_type;
+  };
+
+#+end_src
+
+Certain elements can be accessed in terranix way: ~config.resource.aws_s3_bucket.example~ instead of ~"\${resource.aws_s3_bucket.example}"~ .
+
+Terranix references being evaluated when generating the json file. terraform references being calculated when running terraform.
+
+In Terraform you can create multi line strings using the heredoc style.
+#+begin_src terraform
+  variable "multiline" {
+    description = <<EOT
+  Description for the multi line variable.
+  The indentation here is not wrong.
+  The terminating word must be on a new line without any indentation.
+  EOT
+  }
+#+end_src
+
+This won't work in terranix. In terranix you have to use the nix way of multi line strings.
+#+begin_src nix
+  variable.multiline.description = ''
+    Description for the multi line variable.
+    The indentation here is not wrong.
+    All spaces in front of the text block will be removed by terranix.
+  '';
+
+#+end_src
+
+
+The form ~${expression}~ is used by terranix and terraform. So if you want to use a terraform expression in terranix, you have to escape it.
+Escaping differs for multi and single line strings.
+
+In a single line strings, you escape via \${expression}. For example :
+#+begin_src nix
+  variable.hcloud_token = {};
+  provider.hcloud.token = "\${ var.hcloud_token }";
+#+end_src
+
+  
+
+You can avoid escaping $ with the tfRef function:
+#+begin_src nix
+  { lib, ... }:
+  variable.hcloud_token = {};
+  provider.hcloud.token = lib.tfRef "var.hcloud_token";
+#+end_src
+
+
+In multi line strings, you escape via ~''${expression}~. For example :
+#+begin_src nix
+  resource.local_file.sshConfig = {
+    filename = "./ssh-config";
+    content = ''
+      Host ''${ hcloud_server.terranix_test.ipv4_address }
+      IdentityFile ./sshkey
+    '';
+  };
+#+end_src
+
