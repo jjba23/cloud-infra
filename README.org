@@ -39,4 +39,8 @@ terranix is a tool that enables you to render the config.tf.json file. It uses t
 Run ~journalctl -u amazon-init -e~ as root.
 
 
+* Project management
+
+** Project backlog
 *** TODO separate into smaller instances, instead of medium, use small, one is CI builder spot instance, other is permanent runner server as  where deployment target
+*** TODO create SMTP credentials for sending WikiMusic email
