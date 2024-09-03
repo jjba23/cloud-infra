@@ -65,7 +65,7 @@ let
     tags = { };
   };
 in {
-  mkInstance = { env, name, instanceType ? "m6g.medium", publicKey
+  mkInstance = { env, name, instanceType ? "m7g.medium", publicKey
     , publicKeyName, availabilityZone, userData, ingressRules ? [ ]
     , canManageBuckets ? false, canManageSecrets ? false
     , canManageQueues ? false }:

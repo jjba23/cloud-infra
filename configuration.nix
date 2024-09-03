@@ -29,7 +29,7 @@ let
 
   region = "eu-west-3";
   alternativeRegion = "us-east-1";
-  v = "lambda-32";
+  v = "lambda-33";
   prod = "Production";
 
   certificates = [
@@ -58,7 +58,7 @@ let
   instances = [{
     name = "jjba-${v}";
     env = prod;
-    instanceType = "m6g.medium";
+    instanceType = "m7g.medium";
     availabilityZone = "eu-west-3a";
     publicKey =
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIJDyoK3CG6oBA+YsYwJTv7Ue+438rQ3xaxwwUIbAfUU";
