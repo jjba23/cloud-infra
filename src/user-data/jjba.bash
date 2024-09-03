@@ -39,7 +39,7 @@ nix-shell -p awscli2 git jq \
 echo "Preparing dotfiles"
 rm -rf $HOME/Ontwikkeling/dotfiles-ec2
 nix-shell -p git gnumake \
-	  --run "git clone https://gitlab.com/jjba-projects/dotfiles-ec2 $HOME/Ontwikkeling/dotfiles-ec2"
+	  --run "git clone https://github.com/jjba23/dotfiles-ec2 $HOME/Ontwikkeling/dotfiles-ec2"
 
 echo "Installing EC2 dotfiles"
 cd $HOME/Ontwikkeling/dotfiles-ec2 || exit
@@ -49,12 +49,12 @@ nix-shell -p git gnumake direnv awscli2 \
 echo "Cloning Wikimusic repo"
 rm -rf $HOME/Ontwikkeling/wikimusic-api
 nix-shell -p git gnumake \
-	  --run "git clone https://gitlab.com/jjba-projects/wikimusic-api $HOME/Ontwikkeling/wikimusic-api"
+	  --run "git clone https://github.com/jjba23/wikimusic-api $HOME/Ontwikkeling/wikimusic-api"
 
 echo "Cloning Wikimusic frontend repo"
 rm -rf $HOME/Ontwikkeling/wikimusic-ssr
 nix-shell -p git gnumake \
-	  --run "git clone https://gitlab.com/jjba-projects/wikimusic-ssr $HOME/Ontwikkeling/wikimusic-ssr"
+	  --run "git clone https://github.com/jjba23/wikimusic-ssr $HOME/Ontwikkeling/wikimusic-ssr"
 
 # echo "Cloning JDB API repo"
 # rm -rf $HOME/Ontwikkeling/jdb-api
@@ -92,10 +92,3 @@ systemctl restart wikimusic-api
 echo "Restarting WikiMusic Frontend"
 systemctl restart wikimusic-ssr
 
-#echo "Restoring JDB from latest database backup"
-#nix-shell -p postgresql \
-#	  --run "psql -U jdbapi_admin jdbapi_database -p 55432 < $HOME/$JDBAPI_DB_BACKUP_FILE"
-
-
-# echo "Restarting JDB API"
-# systemctl restart jdb-api

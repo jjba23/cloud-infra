@@ -53,7 +53,6 @@ let
       domainName = "casadelcata.es";
       alternativeNames = [ "www.casadelcata.es" ];
     })
-    #(prl.prodCertificate { domainName = "api.jdb.jointhefreeworld.org"; })
   ];
 
   instances = [{
@@ -194,12 +193,6 @@ let
       value = "api.wikimusic.jointhefreeworld.org";
       type = "A";
     }
-    # {
-    #   name = "api.jdb.jointhefreeworld.org";
-    #   zone = "jointhefreeworld.org";
-    #   value = "api.jdb.jointhefreeworld.org";
-    #   type = "A";
-    # }
     {
       name = "casadelcata.es";
       zone = "casadelcata.es";
@@ -291,17 +284,6 @@ let
       httpPort = 50050;
       httpsPort = 50050;
     }
-    # {
-    #   cf = "api.jdb.jointhefreeworld.org";
-    #   instance = "jjba-${v}";
-    #   description = "JDB API";
-    #   env = prod;
-    #   aliases = [ "api.jdb.jointhefreeworld.org" ];
-    #   certificateArn = lib.tfRef
-    #     "aws_acm_certificate.${tf.tfName "api.jdb.jointhefreeworld.org"}.arn";
-    #   httpPort = 50051;
-    #   httpsPort = 50051;
-    # }
     {
       cf = "wikimusic.jointhefreeworld.org";
       instance = "jjba-${v}";
@@ -327,10 +309,6 @@ let
       name = "dotfiles-ec2-version-release";
       env = prod;
     }
-    # {
-    #   name = "jdb-api-version-release";
-    #   env = prod;
-    # }
     {
       name = "asset-manager-version-release";
       env = prod;
