@@ -25,7 +25,7 @@ echo "Updating Nix channels"
 nix-channel --update
 
 echo "Increasing tmpfs size to 10GB temporarily"
-nix-shell -p mount --run "mount -o remount,size=10G tmpfs"
+nix-shell -p mount --run "mount -o remount,size=20G tmpfs"
 
 echo "Preparing folders"
 mkdir -p $HOME/Ontwikkeling
