@@ -24,7 +24,7 @@ echo "Starting bootstrap of EC2 instance"
 echo "Updating Nix channels"
 nix-channel --update
 
-echo "Increasing tmpfs size to 10GB temporarily"
+echo "Increasing tmpfs size to 20GB temporarily"
 nix-shell -p mount --run "mount -o remount,size=20G tmpfs"
 
 echo "Preparing folders"
