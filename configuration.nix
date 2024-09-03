@@ -341,27 +341,43 @@ let
     }
   ];
 
-  groups = [{
-    name = "queue-admins";
-    path = "/automation/";
-    policyName = "queue-admins";
-    policyStatements = [{
-      Effect = "Allow";
-      Action = [ "sqs:*" ];
-      Resource = "*";
-    }];
-  }];
+  groups = [
+    {
+      name = "queue-admins";
+      path = "/automation/";
+      policyName = "queue-admins";
+      policyStatements = [{
+        Effect = "Allow";
+        Action = [ "sqs:*" ];
+        Resource = "*";
+      }];
+    }
+    {
+      name = "mail-senders";
+      path = "/automation/";
+      policyName = "mail-senders";
+      policyStatements = [{
+        Effect = "Allow";
+        Action = [ "ses:*" ];
+        Resource = "*";
+      }];
+    }
+  ];
 
-  users = [{
-    name = "queue-master";
-    path = "/automation/";
-    groups = [ "queue-admins" ];
-    tags = { };
-  }];
-
-  # accessKeys = [
-  #   {name = "queue-master-key"; user = "queue-master-${v}";}
-  # ];
+  users = [
+    {
+      name = "queue-master";
+      path = "/automation/";
+      groups = [ "queue-admins" ];
+      tags = { };
+    }
+    {
+      name = "mail-sender";
+      path = "/automation/";
+      groups = [ "mail-senders" ];
+      tags = { };
+    }
+  ];
 
   resources = [
     (map cloudfront.mkBucketDistribution bucketDistributions)
@@ -375,7 +391,6 @@ let
     (map sqs.mkFifoQueue fifoQueues)
     (map iam.mkUserGroup groups)
     (map iam.mkUser users)
-    # (map iam.mkAccessKey accessKeys)
   ];
 
 in {
