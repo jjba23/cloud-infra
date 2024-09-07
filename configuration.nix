@@ -103,11 +103,6 @@ let
         groupName = "jjba-${v}";
         cidr = "0.0.0.0/0";
       }
-      {
-        port = "7980";
-        groupName = "jjba-${v}";
-        cidr = "0.0.0.0/0";
-      }
     ];
     canManageBuckets = true;
     canManageSecrets = true;
@@ -343,8 +338,8 @@ let
       certificateArn = lib.tfRef "aws_acm_certificate.${
           tf.tfName "prometheus.jointhefreeworld.org"
         }.arn";
-      httpPort = 7980;
-      httpsPort = 7980;
+      httpPort = 7979;
+      httpsPort = 7979;
     }
   ];
 
