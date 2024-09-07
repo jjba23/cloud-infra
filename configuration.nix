@@ -52,6 +52,10 @@ let
       domainName = "grafana.jointhefreeworld.org";
       alternativeNames = [ ];
     })
+    (prl.prodCertificate {
+      domainName = "prometheus.jointhefreeworld.org";
+      alternativeNames = [ ];
+    })
     (prl.prodCertificate { domainName = "api.wikimusic.jointhefreeworld.org"; })
     (prl.prodCertificate {
       domainName = "casadelcata.es";
@@ -96,6 +100,11 @@ let
       }
       {
         port = "7979";
+        groupName = "jjba-${v}";
+        cidr = "0.0.0.0/0";
+      }
+      {
+        port = "7980";
         groupName = "jjba-${v}";
         cidr = "0.0.0.0/0";
       }
@@ -227,6 +236,12 @@ let
       value = "grafana.jointhefreeworld.org";
       type = "A";
     }
+    {
+      name = "prometheus.jointhefreeworld.org";
+      zone = "jointhefreeworld.org";
+      value = "prometheus.jointhefreeworld.org";
+      type = "A";
+    }
   ];
 
   bucketDistributions = [
@@ -318,6 +333,18 @@ let
         "aws_acm_certificate.${tf.tfName "grafana.jointhefreeworld.org"}.arn";
       httpPort = 7979;
       httpsPort = 7979;
+    }
+    {
+      cf = "prometheus.jointhefreeworld.org";
+      instance = "jjba-${v}";
+      description = "Prometheus Jointhefreeworld";
+      env = prod;
+      aliases = [ "prometheus.jointhefreeworld.org" ];
+      certificateArn = lib.tfRef "aws_acm_certificate.${
+          tf.tfName "prometheus.jointhefreeworld.org"
+        }.arn";
+      httpPort = 7980;
+      httpsPort = 7980;
     }
   ];
 
