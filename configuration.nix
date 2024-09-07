@@ -71,11 +71,6 @@ let
         cidr = "0.0.0.0/0";
       }
       {
-        port = "50051";
-        groupName = "jjba-${v}";
-        cidr = "0.0.0.0/0";
-      }
-      {
         port = "6923";
         groupName = "jjba-${v}";
         cidr = "0.0.0.0/0";
@@ -92,6 +87,11 @@ let
       }
       {
         port = "22";
+        groupName = "jjba-${v}";
+        cidr = "0.0.0.0/0";
+      }
+      {
+        port = "7979";
         groupName = "jjba-${v}";
         cidr = "0.0.0.0/0";
       }
@@ -217,6 +217,12 @@ let
       value = "carvoeirowaterfun.com";
       type = "A";
     }
+    {
+      name = "grafana.jointhefreeworld.org";
+      zone = "jointhefreeworld.org";
+      value = "grafana.jointhefreeworld.org";
+      type = "A";
+    }
   ];
 
   bucketDistributions = [
@@ -297,6 +303,17 @@ let
         "aws_acm_certificate.${tf.tfName "wikimusic.jointhefreeworld.org"}.arn";
       httpPort = 6923;
       httpsPort = 6923;
+    }
+    {
+      cf = "grafana.jointhefreeworld.org";
+      instance = "jjba-${v}";
+      description = "Grafana Jointhefreeworld";
+      env = prod;
+      aliases = [ "grafana.jointhefreeworld.org" ];
+      certificateArn = lib.tfRef
+        "aws_acm_certificate.${tf.tfName "grafana.jointhefreeworld.org"}.arn";
+      httpPort = 7979;
+      httpsPort = 7979;
     }
   ];
 
