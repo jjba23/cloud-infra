@@ -48,6 +48,10 @@ let
       domainName = "wikimusic.jointhefreeworld.org";
       alternativeNames = [ "www.wikimusic.jointhefreeworld.org" ];
     })
+    (prl.prodCertificate {
+      domainName = "grafana.jointhefreeworld.org";
+      alternativeNames = [ ];
+    })
     (prl.prodCertificate { domainName = "api.wikimusic.jointhefreeworld.org"; })
     (prl.prodCertificate {
       domainName = "casadelcata.es";
