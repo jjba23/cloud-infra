@@ -22,7 +22,12 @@ HOME="/home/joe"
 echo "Starting bootstrap of EC2 instance"
 
 echo "Updating Nix channels"
-nix-channel --update
+nix-channel --remove nixos || true
+nix-channel --remove nixpkgs || true
+nix-channel --add https://nixos.org/channels/nixpkgs-unstable || true
+nix-channel --update || true
+nix-channel --update || true 
+nix-channel --update || true
 
 echo "Increasing tmpfs size to 20GB temporarily"
 nix-shell -p mount --run "mount -o remount,size=20G tmpfs"
