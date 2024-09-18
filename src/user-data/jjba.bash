@@ -73,9 +73,12 @@ echo "Restoring WikiMusic from latest database backup"
 nix-shell -p unzip \
 	  --run "cd $MY_HOME && unzip $MY_HOME/$WIKIMUSIC_DB_BACKUP_FILE"
 
+chown -R joe $MY_HOME || true
+
 echo "Restarting WikiMusic API"
 systemctl restart wikimusic-api
 
 echo "Restarting WikiMusic Frontend"
 systemctl restart wikimusic-ssr
+
 
