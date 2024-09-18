@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-HOME="/home/joe"
+MY_HOME="/home/joe"
 
 
 echo "Starting bootstrap of EC2 instance"
@@ -33,45 +33,45 @@ echo "Increasing tmpfs size to 20GB temporarily"
 nix-shell -p mount --run "mount -o remount,size=20G tmpfs"
 
 echo "Preparing folders"
-mkdir -p $HOME/Ontwikkeling
-mkdir -p $HOME/.config/sops/age
+mkdir -p $MY_HOME/Ontwikkeling
+mkdir -p $MY_HOME/.config/sops/age
 
 echo "Fetching age key for sops nix process"
-rm -f $HOME/.config/sops/age/keys.txt
+rm -f $MY_HOME/.config/sops/age/keys.txt
 nix-shell -p awscli2 git jq \
-	  --run "aws secretsmanager get-secret-value --secret-id prod/age_key | jq -r '.SecretString' >> $HOME/.config/sops/age/keys.txt"
+	  --run "aws secretsmanager get-secret-value --secret-id prod/age_key | jq -r '.SecretString' >> $MY_HOME/.config/sops/age/keys.txt"
 
 echo "Preparing dotfiles"
-rm -rf $HOME/Ontwikkeling/dotfiles-ec2
+rm -rf $MY_HOME/Ontwikkeling/dotfiles-ec2
 nix-shell -p git gnumake \
-	  --run "git clone https://github.com/jjba23/dotfiles-ec2 $HOME/Ontwikkeling/dotfiles-ec2"
+	  --run "git clone https://github.com/jjba23/dotfiles-ec2 $MY_HOME/Ontwikkeling/dotfiles-ec2"
 
 echo "Installing EC2 dotfiles"
-cd $HOME/Ontwikkeling/dotfiles-ec2 || exit
+cd $MY_HOME/Ontwikkeling/dotfiles-ec2 || exit
 nix-shell -p git gnumake direnv awscli2 \
 	  --run "direnv allow && direnv reload && make nr"   
 
 echo "Cloning Wikimusic repo"
-rm -rf $HOME/Ontwikkeling/wikimusic-api
+rm -rf $MY_HOME/Ontwikkeling/wikimusic-api
 nix-shell -p git gnumake \
-	  --run "git clone https://github.com/jjba23/wikimusic-api $HOME/Ontwikkeling/wikimusic-api"
+	  --run "git clone https://github.com/jjba23/wikimusic-api $MY_HOME/Ontwikkeling/wikimusic-api"
 
 echo "Cloning Wikimusic frontend repo"
-rm -rf $HOME/Ontwikkeling/wikimusic-ssr
+rm -rf $MY_HOME/Ontwikkeling/wikimusic-ssr
 nix-shell -p git gnumake \
-	  --run "git clone https://github.com/jjba23/wikimusic-ssr $HOME/Ontwikkeling/wikimusic-ssr"
+	  --run "git clone https://github.com/jjba23/wikimusic-ssr $MY_HOME/Ontwikkeling/wikimusic-ssr"
 
 echo "Fetching latest backup file for WikiMusic"
 
 WIKIMUSIC_DB_BACKUP_FILE=$(nix-shell -p awscli2 git jq --run "aws s3 ls s3://cloud-infra-state-jjba/wikimusic/backups/sqlite/ | grep wikimusic-sqlite | sort | tail -n 1 | awk '{print \$4}'")
 
 nix-shell -p awscli2 git jq \
-	  --run "aws s3 cp s3://cloud-infra-state-jjba/wikimusic/backups/sqlite/$WIKIMUSIC_DB_BACKUP_FILE $HOME/$WIKIMUSIC_DB_BACKUP_FILE"
+	  --run "aws s3 cp s3://cloud-infra-state-jjba/wikimusic/backups/sqlite/$WIKIMUSIC_DB_BACKUP_FILE $MY_HOME/$WIKIMUSIC_DB_BACKUP_FILE"
 
 
 echo "Restoring WikiMusic from latest database backup"
-nix-shell -p zip \
-	  --run "cd $HOME && unzip $HOME/$WIKIMUSIC_DB_BACKUP_FILE"
+nix-shell -p unzip \
+	  --run "cd $MY_HOME && unzip $MY_HOME/$WIKIMUSIC_DB_BACKUP_FILE"
 
 echo "Restarting WikiMusic API"
 systemctl restart wikimusic-api
