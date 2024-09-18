@@ -29,7 +29,7 @@ let
 
   region = "eu-west-3";
   alternativeRegion = "us-east-1";
-  v = "lambda-33";
+  v = "lambda-34";
   prod = "Production";
 
   certificates = [
