@@ -75,11 +75,18 @@ nix-shell -p unzip \
 
 chown -R joe:users $MY_HOME || true
 
+echo "Cloning Byggsteg frontend repo"
+rm -rf $MY_HOME/Ontwikkeling/byggsteg
+nix-shell -p git gnumake \
+	  --run "git clone https://github.com/jjba23/byggsteg $MY_HOME/Ontwikkeling/byggsteg"
+
 echo "Restarting WikiMusic API"
 systemctl restart wikimusic-api
 
 echo "Restarting WikiMusic Frontend"
 systemctl restart wikimusic-ssr
 
+echo "Restarting Byggsteg"
+systemctl restart byggsteg
 
-git config --global safe.directory '*' || true
+nix-shell -p git --run "git config --global safe.directory '*' || true"

@@ -56,6 +56,10 @@ let
       domainName = "prometheus.jointhefreeworld.org";
       alternativeNames = [ ];
     })
+    (prl.prodCertificate {
+      domainName = "byggsteg.jointhefreeworld.org";
+      alternativeNames = [ ];
+    })
     (prl.prodCertificate { domainName = "api.wikimusic.jointhefreeworld.org"; })
     (prl.prodCertificate {
       domainName = "casadelcata.es";
@@ -237,6 +241,12 @@ let
       value = "prometheus.jointhefreeworld.org";
       type = "A";
     }
+    {
+      name = "byggsteg.jointhefreeworld.org";
+      zone = "jointhefreeworld.org";
+      value = "byggsteg.jointhefreeworld.org";
+      type = "A";
+    }
   ];
 
   bucketDistributions = [
@@ -341,26 +351,20 @@ let
       httpPort = 7979;
       httpsPort = 7979;
     }
+    {
+      cf = "byggsteg.jointhefreeworld.org";
+      instance = "jjba-${v}";
+      description = "Byggsteg Jointhefreeworld";
+      env = prod;
+      aliases = [ "byggsteg.jointhefreeworld.org" ];
+      certificateArn = lib.tfRef
+        "aws_acm_certificate.${tf.tfName "byggsteg.jointhefreeworld.org"}.arn";
+      httpPort = 7979;
+      httpsPort = 7979;
+    }
   ];
 
-  fifoQueues = [
-    {
-      name = "wikimusic-version-release";
-      env = prod;
-    }
-    {
-      name = "dotfiles-ec2-version-release";
-      env = prod;
-    }
-    {
-      name = "asset-manager-version-release";
-      env = prod;
-    }
-    {
-      name = "wikimusic-frontend-version-release";
-      env = prod;
-    }
-  ];
+  fifoQueues = [ ];
 
   groups = [
     {
