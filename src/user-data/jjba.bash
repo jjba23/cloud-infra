@@ -36,6 +36,8 @@ echo "Preparing folders"
 mkdir -p $MY_HOME/Ontwikkeling
 mkdir -p $MY_HOME/.config/sops/age
 
+nix-shell -p git --run "git config --global safe.directory '*' || true"
+
 echo "Fetching age key for sops nix process"
 rm -f $MY_HOME/.config/sops/age/keys.txt
 nix-shell -p awscli2 git jq \
@@ -76,9 +78,9 @@ nix-shell -p unzip \
 chown -R joe:users $MY_HOME || true
 
 echo "Cloning Byggsteg frontend repo"
-rm -rf $MY_HOME/Ontwikkeling/byggsteg
+mkdir -p /var/log/byggsteg/job-clone/byggsteg
 nix-shell -p git gnumake \
-	  --run "git clone https://github.com/jjba23/byggsteg $MY_HOME/Ontwikkeling/byggsteg"
+	  --run "git clone https://github.com/jjba23/byggsteg /var/log/byggsteg/job-clone/byggsteg/trunk" || true
 
 echo "Restarting WikiMusic API"
 systemctl restart wikimusic-api
@@ -89,4 +91,4 @@ systemctl restart wikimusic-ssr
 echo "Restarting Byggsteg"
 systemctl restart byggsteg
 
-nix-shell -p git --run "git config --global safe.directory '*' || true"
+
