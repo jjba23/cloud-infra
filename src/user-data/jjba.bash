@@ -54,14 +54,14 @@ nix-shell -p git gnumake direnv awscli2 \
 	  --run "direnv allow && direnv reload && make nr"   
 
 echo "Cloning Wikimusic repo"
-rm -rf $MY_HOME/Ontwikkeling/wikimusic-api
+mkdir -p /var/log/byggsteg/job-clone/wikimusic-api
 nix-shell -p git gnumake \
-	  --run "git clone https://github.com/jjba23/wikimusic-api $MY_HOME/Ontwikkeling/wikimusic-api"
+	  --run "git clone https://github.com/jjba23/wikimusic-api /var/log/byggsteg/job-clone/wikimusic-api/trunk"
 
 echo "Cloning Wikimusic frontend repo"
-rm -rf $MY_HOME/Ontwikkeling/wikimusic-ssr
+mkdir -p /var/log/byggsteg/job-clone/wikimusic-ssr
 nix-shell -p git gnumake \
-	  --run "git clone https://github.com/jjba23/wikimusic-ssr $MY_HOME/Ontwikkeling/wikimusic-ssr"
+	  --run "git clone https://github.com/jjba23/wikimusic-ssr /var/log/byggsteg/job-clone/wikimusic-ssr/trunk"
 
 echo "Fetching latest backup file for WikiMusic"
 
